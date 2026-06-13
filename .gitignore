@@ -5,3 +5,6 @@
 /Tests/bin
 /ApplicationWorker/obj
 /.vs
+/EntryPoint/bin
+/Infrastructure/bin
+/Domain/bin
