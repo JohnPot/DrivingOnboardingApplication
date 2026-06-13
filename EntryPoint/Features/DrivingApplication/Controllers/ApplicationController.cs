@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EntryPoint.Features.DrivingApplication.Interfaces;
 using EntryPoint.Features.DrivingApplication.Models.Requests;
-using Domain.Utilities;
+using Domain.Enums;
 using EntryPoint.CommonMethods;
 using EntryPoint.Features.DrivingApplication.Models.Responses;
 

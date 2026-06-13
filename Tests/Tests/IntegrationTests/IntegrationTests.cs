@@ -1,6 +1,6 @@
 ﻿using EntryPoint.Features.DrivingApplication.Models.Responses;
 using FluentAssertions;
-using Domain.Utilities;
+using Domain.Enums;
 using IntegrationTests.TestBase;
 using System.Net;
 using System.Net.Http.Headers;

@@ -1,6 +1,6 @@
 ﻿using ApplicationWorker.Activities;
 using ApplicationWorker.Services;
-using Domain.Utilities;
+using Domain.Enums;
 using Domain.Transitions;
 
 namespace ApplicationWorker.Workflows;

@@ -1,5 +1,5 @@
 ﻿using Domain.Transitions;
-using Domain.Utilities;
+using Domain.Enums;
 
 namespace Tests.Tests.UnitTests;
 

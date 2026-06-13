@@ -1,7 +1,7 @@
 ﻿using ApplicationWorker.Dtos;
 using Domain.Transitions;
 using Infrastructure.Database;
-using Domain.Utilities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationWorker.Services;

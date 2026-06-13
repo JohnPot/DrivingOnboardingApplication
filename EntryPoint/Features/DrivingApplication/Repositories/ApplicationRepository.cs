@@ -2,7 +2,7 @@
 using EntryPoint.Features.DrivingApplication.Interfaces;
 using EntryPoint.Features.DrivingApplication.Models.Requests;
 using EntryPoint.Features.DrivingApplication.Models.Responses;
-using Domain.Utilities;
+using Domain.Enums;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,6 +1,6 @@
 ﻿using ApplicationWorker.Models;
 using Infrastructure.Database;
-using Domain.Utilities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using NATS.Net;
 

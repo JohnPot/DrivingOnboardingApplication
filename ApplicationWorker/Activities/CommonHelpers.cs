@@ -1,5 +1,5 @@
 ﻿using ApplicationWorker.Dtos;
-using Domain.Utilities;
+using Domain.Enums;
 
 namespace ApplicationWorker.Activities;
 
