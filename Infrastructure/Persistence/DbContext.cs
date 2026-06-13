@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Persistence.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Database;
+namespace Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext
 {

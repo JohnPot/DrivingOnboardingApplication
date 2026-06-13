@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 
-namespace Infrastructure.Database;
+namespace Infrastructure.Persistence.Models;
 
 public class ApplicationAudit
 {

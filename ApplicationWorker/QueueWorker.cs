@@ -1,7 +1,7 @@
 ﻿using ApplicationWorker.Models;
 using ApplicationWorker.Services;
 using ApplicationWorker.Workflows;
-using Infrastructure.Database;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using NATS.Client.JetStream;
 using NATS.Client.JetStream.Models;

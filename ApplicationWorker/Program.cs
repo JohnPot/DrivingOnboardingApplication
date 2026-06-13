@@ -1,7 +1,7 @@
 using ApplicationWorker;
 using ApplicationWorker.Services;
 using ApplicationWorker.Workflows;
-using Infrastructure.Database;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using NATS.Net;
 using NpgsqlTypes;

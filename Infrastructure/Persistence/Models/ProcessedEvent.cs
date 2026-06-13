@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Database;
+﻿namespace Infrastructure.Persistence.Models;
 
 public class ProcessedEvent
 {

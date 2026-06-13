@@ -1,7 +1,7 @@
 ﻿using EntryPoint.CommonMethods;
 using EntryPoint.Middleware;
 using FluentValidation.AspNetCore;
-using Infrastructure.Database;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using NpgsqlTypes;

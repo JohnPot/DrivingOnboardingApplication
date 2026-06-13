@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Persistence.Models;
 
-namespace Infrastructure.Database;
+namespace Infrastructure.Persistence.Configurations;
 
 public class ApplicationAuditConfiguration : IEntityTypeConfiguration<ApplicationAudit>
 {

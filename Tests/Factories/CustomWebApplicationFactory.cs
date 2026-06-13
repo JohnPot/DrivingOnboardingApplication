@@ -1,5 +1,5 @@
 ﻿using ApplicationWorker;
-using Infrastructure.Database;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using NATS.Client.Core;

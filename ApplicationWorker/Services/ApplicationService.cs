@@ -1,8 +1,9 @@
 ﻿using ApplicationWorker.Dtos;
 using Domain.Transitions;
-using Infrastructure.Database;
+using Infrastructure.Persistence;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Persistence.Models;
 
 namespace ApplicationWorker.Services;
 

@@ -1,4 +1,5 @@
-﻿using Infrastructure.Database;
+﻿using Infrastructure.Persistence;
+using Infrastructure.Persistence.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationWorker.Services;

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Persistence.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Database;
+namespace Infrastructure.Persistence.Configurations;
 
 public class OutboxEventConfiguration : IEntityTypeConfiguration<OutboxEvent>
 {

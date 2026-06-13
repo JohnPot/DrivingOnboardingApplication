@@ -3,8 +3,9 @@ using EntryPoint.Features.DrivingApplication.Interfaces;
 using EntryPoint.Features.DrivingApplication.Models.Requests;
 using EntryPoint.Features.DrivingApplication.Models.Responses;
 using Domain.Enums;
-using Infrastructure.Database;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Persistence.Models;
 
 namespace EntryPoint.Features.DrivingApplication.Repositories;
 
