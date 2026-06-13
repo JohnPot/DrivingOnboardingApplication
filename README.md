@@ -314,6 +314,12 @@ where each log entry contains named properties rather than raw strings.
 Structured logs are designed to integrate easily with cloud observability stacks
 ```
 
+### 🧠 Validation
+```text
+Input validation is implemented using FluentValidation, providing a centralized and maintainable
+way to enforce request validation rules before application processing begins.
+```
+
 ## 📈 Key Design Decisions
 
 ### 🔄 Event-driven architecture (NATS)
