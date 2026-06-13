@@ -252,6 +252,8 @@ Before production, the system could be improved by:
 - Splitting workers into independently scalable services
 - Strengthening consistency with a fully managed workflow engine if complexity grows
 - Introducing proper layering by moving entities to a Domain project, defining repository interfaces in the Domain layer, and implementing them in a dedicated Infrastructure layer, instead of keeping persistence logic inside the EntryPoint project (currently simplified due to project scope and time constraints)
+- Error handling could be enhanced by extending the global middleware to cover a broader range of domain and infrastructure exceptions, providing more consistent and informative responses to API clients.
+- Audit tracking could be centralized by overriding SaveChangesAsync in the EF Core DbContext, automatically capturing entity changes and reducing audit-related logic scattered throughout the application.
 
 ### 📦 Docker Setup
 ```text
