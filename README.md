@@ -251,6 +251,7 @@ Before production, the system could be improved by:
 - Adding centralized observability dashboards
 - Splitting workers into independently scalable services
 - Strengthening consistency with a fully managed workflow engine if complexity grows
+- Introducing proper layering by moving entities to a Domain project, defining repository interfaces in the Domain layer, and implementing them in a dedicated Infrastructure layer, instead of keeping persistence logic inside the EntryPoint project (currently simplified due to project scope and time constraints)
 
 ### 📦 Docker Setup
 ```text
