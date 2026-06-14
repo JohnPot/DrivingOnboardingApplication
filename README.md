@@ -70,7 +70,7 @@ The system depends on external services:
 PostgreSQL
 NATS message broker
 
-docker-compose up -d
+docker compose up
 
 Swagger:
 http://localhost:8080/swagger
