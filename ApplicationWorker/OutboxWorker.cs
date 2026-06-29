@@ -47,7 +47,7 @@ public class OutboxWorker : BackgroundService
 
                     await js.PublishAsync("application.submitted", message, null, null, null, cancellationToken);
 
-                    _logger.LogInformation("published outbox event {Id} for application id {application_id}", ev.Id, ev.Payload);
+                    _logger.LogInformation("published outbox event {OutEventId} for application id {ApplicationId}", ev.Id, ev.Payload);
 
                     ev.Status = ApplicationOutboxStatus.Submitted;
                     ev.ProcessedAt = DateTime.UtcNow;
@@ -56,7 +56,7 @@ public class OutboxWorker : BackgroundService
                 {
                     ev.Status = ApplicationOutboxStatus.Pending;
 
-                    _logger.LogError(ex, "Failed to publish outbox event {Id}", ev.Id);
+                    _logger.LogError(ex, "Failed to publish outbox event {OutboxEventId}", ev.Id);
 
                     await Task.Delay(1000, cancellationToken);
                 }

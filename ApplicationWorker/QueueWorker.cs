@@ -63,7 +63,7 @@ public class QueueWorker : BackgroundService
         {
             await foreach (var msg in consumer.ConsumeAsync<ApplicationSubmittedMessage>(serializer, opts, cancellationToken))
             {
-                _logger.LogInformation("Processing {id}", msg.Data.ApplicationId);
+                _logger.LogInformation("Processing {PayloadApplicationId}", msg.Data.ApplicationId);
 
                 var applicationId = msg.Data.ApplicationId;
 
@@ -91,7 +91,7 @@ public class QueueWorker : BackgroundService
 
                     await msg.AckAsync();
 
-                    _logger.LogInformation("Message with key {Key} already processed", msg.Data.IdempotencyKey);
+                    _logger.LogInformation("Message with key {IdempotencyKey} already processed", msg.Data.IdempotencyKey);
                 }
                 catch (Exception ex)
                 {

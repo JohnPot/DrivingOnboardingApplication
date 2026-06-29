@@ -10,7 +10,7 @@ public static class ServiceCollectionDependencies
 {
     public static IServiceCollection AddDependency(this IServiceCollection services)
     {
-        services.AddTransient<IApplicationRepository, ApplicationRepository>();
+        services.AddScoped<IApplicationService, ApplicationService>();
 
         return services;
     }

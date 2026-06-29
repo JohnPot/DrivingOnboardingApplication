@@ -14,10 +14,10 @@ namespace EntryPoint.Features.DrivingApplication.Controllers;
 [Route("api/applications")]
 public class ApplicationController : ControllerBase
 {
-    private readonly IApplicationRepository _applicationRepository;
-    public ApplicationController(IApplicationRepository mainRepository)
+    private readonly IApplicationService _applicationService;
+    public ApplicationController(IApplicationService applicationService)
     {
-        _applicationRepository = mainRepository;
+        _applicationService = applicationService;
     }
 
     /// <summary>
@@ -29,7 +29,7 @@ public class ApplicationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetApplicationStatus([FromRoute] Guid applicationId, CancellationToken cancellationToken)
     {
-        var result = await _applicationRepository.GetByIdAsync(applicationId, cancellationToken);
+        var result = await _applicationService.GetByIdAsync(applicationId, cancellationToken);
 
         if (result.IsFailure)
         {
@@ -51,7 +51,7 @@ public class ApplicationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> PostApplicationData([FromBody] CreateApplicationRequest request, CancellationToken cancellationToken)
     {
-        var result = await _applicationRepository.CreateApplication(request, cancellationToken);
+        var result = await _applicationService.CreateApplicationAsync(request, cancellationToken);
 
         if (result.IsFailure)
             return BadRequest(result.Error);
@@ -72,7 +72,7 @@ public class ApplicationController : ControllerBase
         using var ms = new MemoryStream();
         await photo.Photo.CopyToAsync(ms);
 
-        var result = await _applicationRepository.AddPhotoAsync(applicationId, ms.ToArray(), cancellationToken);
+        var result = await _applicationService.AddPhotoAsync(applicationId, ms.ToArray(), cancellationToken);
 
         if (result.IsFailure)
         {
@@ -97,7 +97,7 @@ public class ApplicationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ApplicationSubmit([FromRoute] Guid applicationId, CancellationToken cancellationToken)
     {
-        var result = await _applicationRepository.ApplicationSubmit(applicationId, cancellationToken);
+        var result = await _applicationService.ApplicationSubmitAsync(applicationId, cancellationToken);
 
         if (result.IsFailure)
         {
@@ -122,7 +122,7 @@ public class ApplicationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> ApproveApplication([FromRoute] Guid applicationId, CancellationToken cancellationToken)
     {
-        var result = await _applicationRepository.UpdateStatusAsync(applicationId, ApplicationStatus.Approved, null , cancellationToken);
+        var result = await _applicationService.UpdateStatusAsync(applicationId, ApplicationStatus.Approved, null , cancellationToken);
 
         if (result.IsFailure)
         {
@@ -147,7 +147,7 @@ public class ApplicationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> RejectApplication([FromRoute] Guid applicationId, [FromBody] RejectApplicationRequest rejection, CancellationToken cancellationToken)
     {
-        var result = await _applicationRepository.UpdateStatusAsync(applicationId, ApplicationStatus.Rejected, rejection?.reason, cancellationToken);
+        var result = await _applicationService.UpdateStatusAsync(applicationId, ApplicationStatus.Rejected, rejection?.reason, cancellationToken);
 
         if (result.IsFailure)
         {
@@ -169,7 +169,7 @@ public class ApplicationController : ControllerBase
     [ProducesResponseType(typeof(List<GetApplicationHistoryResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> ApplicationStateTransitionHistory([FromRoute] Guid applicationId, CancellationToken cancellationToken)
     {
-        var result = await _applicationRepository.ApplicationHistoryAsync(applicationId, cancellationToken);
+        var result = await _applicationService.ApplicationHistoryAsync(applicationId, cancellationToken);
 
         if (result.IsFailure)
             return BadRequest(result.Error);

@@ -10,12 +10,12 @@ using EntryPoint.Features.DrivingApplication.GetApplicationHistory;
 
 namespace EntryPoint.Features.DrivingApplication.Repositories;
 
-public class ApplicationRepository : IApplicationRepository
+public class ApplicationService : IApplicationService
 {
     private readonly ApplicationDbContext _context;
-    private readonly ILogger<ApplicationRepository> _logger;
+    private readonly ILogger<ApplicationService> _logger;
 
-    public ApplicationRepository(ApplicationDbContext context, ILogger<ApplicationRepository> logger)
+    public ApplicationService(ApplicationDbContext context, ILogger<ApplicationService> logger)
     {
         _context = context;
         _logger = logger;
@@ -38,15 +38,15 @@ public class ApplicationRepository : IApplicationRepository
 
         if (application is null)
         {
-            _logger.LogError("application for id {id} was not found", id);
+            _logger.LogError("application for id {ApplicationId} was not found", id);
             return Result<GetApplicationResponse>.Failure("Application not found", ReturnStates.NotFound);
         }
 
-        _logger.LogInformation("application for id {id} was found", id);
+        _logger.LogInformation("application for id {ApplicationId} was found", id);
         return Result<GetApplicationResponse>.Success(application);
     }
 
-    public async Task<Result<CreateApplicationResponse>> CreateApplication(CreateApplicationRequest request, CancellationToken cancellationToken)
+    public async Task<Result<CreateApplicationResponse>> CreateApplicationAsync(CreateApplicationRequest request, CancellationToken cancellationToken)
     {
         //ADD APPLICATION//
         var entity = new DrivingLicenceApplication
@@ -80,7 +80,7 @@ public class ApplicationRepository : IApplicationRepository
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Application created with id {id} ", entity.Id);
+        _logger.LogInformation("Application created with id {ApplicationId} ", entity.Id);
 
         return Result<CreateApplicationResponse>.Success(new CreateApplicationResponse() { ApplicationId = entity.Id, Status = ApplicationStatus.Pending });
     }
@@ -100,13 +100,13 @@ public class ApplicationRepository : IApplicationRepository
 
         if (application is null)
         {
-            _logger.LogError("Application with id {id} was not found", id);
+            _logger.LogError("Application with id {ApplicationId} was not found", id);
             return Result.Failure("application not found", ReturnStates.NotFound);
         }
 
         if (application.Status != ApplicationStatus.Pending)
         {
-            _logger.LogError("Application with id {id} is not in state {state}", id, Enum.GetName(ApplicationStatus.Pending));
+            _logger.LogError("Application with id {ApplicationId} is not in state {ApplicationState}", id, Enum.GetName(ApplicationStatus.Pending));
             return Result.Failure("application not in pending state", ReturnStates.Conflict);
         }
 
@@ -120,7 +120,7 @@ public class ApplicationRepository : IApplicationRepository
 
         if (result == 0)
         {
-            _logger.LogError("Couldn't upload photo for application with id {id}", id);
+            _logger.LogError("Couldn't upload photo for application with id {ApplicationId}", id);
             return Result.Failure("Couldn't upload photo", ReturnStates.BadRequest);
         }
 
@@ -136,14 +136,14 @@ public class ApplicationRepository : IApplicationRepository
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Photo for application with id {id} was uploaded successfully", id);
+        _logger.LogInformation("Photo for application with id {ApplicationId} was uploaded successfully", id);
 
         await transaction.CommitAsync(cancellationToken);
 
         return Result.Success();
     }
 
-    public async Task<Result> ApplicationSubmit(Guid id, CancellationToken cancellationToken)
+    public async Task<Result> ApplicationSubmitAsync(Guid id, CancellationToken cancellationToken)
     {
         //FIND APPLICATION//
         var application = await _context.Applications
@@ -158,14 +158,8 @@ public class ApplicationRepository : IApplicationRepository
 
         if (application is null)
         {
-            _logger.LogError("Application with id {id} was not found", id);
+            _logger.LogError("Application with id {ApplicationId} was not found", id);
             return Result.Failure("application not found", ReturnStates.NotFound);
-        }
-
-        if(application.Status != ApplicationStatus.Pending)
-        {
-            _logger.LogError("Application with id {id} is not in state {state}", id, Enum.GetName(ApplicationStatus.Pending));
-            return Result.Failure("application not in pending state", ReturnStates.Conflict);
         }
 
         //CHECK FOR ANY EMPTY VALUES//
@@ -186,7 +180,7 @@ public class ApplicationRepository : IApplicationRepository
 
         if (hasAnyEmptyValue)
         {
-            _logger.LogError("Application with id {id} has empty values", id);
+            _logger.LogError("Application with id {ApplicationId} has empty values", id);
             return Result.Failure("application has empty values", ReturnStates.BadRequest);
         }
 
@@ -194,14 +188,14 @@ public class ApplicationRepository : IApplicationRepository
 
         //SUBMIT APPLICATION//
         int result = await _context.Applications
-       .Where(x => x.Id == id)
-       .ExecuteUpdateAsync(setters => setters
-       .SetProperty(x => x.Status, ApplicationStatus.Submitted), cancellationToken);
+           .Where(x => x.Id == id && x.Status == ApplicationStatus.Pending)
+           .ExecuteUpdateAsync(setters => setters
+           .SetProperty(x => x.Status, ApplicationStatus.Submitted), cancellationToken);
 
         if(result == 0)
         {
-            _logger.LogError("Couldn't update the database, something went wrong");
-            return Result.Failure("Couldn't update the database, something went wrong", ReturnStates.BadRequest);
+            _logger.LogError("Application with id {ApplicationId} is not in state {ApplicationState}", id, Enum.GetName(ApplicationStatus.Pending));
+            return Result.Failure("application not in pending state", ReturnStates.Conflict);
         }
 
         //ADD OUTBOX EVENT//
@@ -248,24 +242,30 @@ public class ApplicationRepository : IApplicationRepository
 
         if (application is null)
         {
-            _logger.LogError("Application with id {id} was not found", id);
+            _logger.LogError("Application with id {ApplicationId} was not found", id);
             return Result.Failure("Application not found", ReturnStates.NotFound);
         }
 
-        if (application.Status != ApplicationStatus.PendingManualReview)
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+
+        //UPDATE APPLICATION STATUS//
+        int result = await _context.Applications
+            .Where(x => x.Id == id && x.Status == ApplicationStatus.PendingManualReview)
+            .ExecuteUpdateAsync(setters => setters
+            .SetProperty(x => x.Status, status), cancellationToken);
+
+        if(result == 0)
         {
-            _logger.LogError("Application with id {id} is in state {wrongState} and not in state {rightState}", id, application.Status, Enum.GetName(ApplicationStatus.PendingManualReview));
+            _logger.LogError("Application with id {ApplicationId} is in state {WrongApplicationState} and not in state {RightApplicationState}", id, application.Status, Enum.GetName(ApplicationStatus.PendingManualReview));
             return Result.Failure("Only applications in status 'Manual Review' can be approved or rejected", ReturnStates.Conflict);
         }
-
-        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
         //ADD AUDIT//
         _context.ApplicationAudits.Add(new ApplicationAudit
         {
             Id = Guid.NewGuid(),
             ApplicationId = id,
-            FromStatus = application.Status,
+            FromStatus = ApplicationStatus.PendingManualReview,
             ToStatus = status,
             EventType = status switch
             {
@@ -276,15 +276,9 @@ public class ApplicationRepository : IApplicationRepository
             CreatedAt = DateTime.UtcNow
         });
 
-        //UPDATE APPLICATION STATUS//
-        await _context.Applications
-        .Where(x => x.Id == id)
-        .ExecuteUpdateAsync(setters => setters
-        .SetProperty(x => x.Status, status), cancellationToken);
-
         await _context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Application with id {id} updated to status {status} successfully", id, Enum.GetName(status));
+        _logger.LogInformation("Application with id {ApplicationId} updated to status {ApplicationStatus} successfully", id, Enum.GetName(status));
 
         await transaction.CommitAsync(cancellationToken);
 
@@ -308,7 +302,7 @@ public class ApplicationRepository : IApplicationRepository
         })
         .ToListAsync(cancellationToken);
 
-        _logger.LogInformation("Application history for application with id {id} found", id);
+        _logger.LogInformation("Application history for application with id {ApplicationId} found", id);
 
         return Result<List<GetApplicationHistoryResponse>>.Success(history);
     }

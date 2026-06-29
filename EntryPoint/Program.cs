@@ -36,8 +36,6 @@ builder.Host.UseSerilog((context, services, loggerConfiguration) =>
             needAutoCreateTable: true);
 });
 
-AppSettings.Configuration = builder.Configuration;
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

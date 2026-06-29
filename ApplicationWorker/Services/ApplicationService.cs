@@ -38,7 +38,7 @@ public class ApplicationService
     {
         if (!TransitionValidator.CanTransition(from, to))
         {
-            _logger.LogError("Invalid transition {From} -> {To} for {Id}", from, to, applicationId);
+            _logger.LogError("Invalid transition {FromApplicationStatus} -> {ToApplicationStatus} for {ApplicationId}", from, to, applicationId);
 
             return from;
         }
@@ -62,7 +62,7 @@ public class ApplicationService
 
         await _context.SaveChangesAsync(ct);
 
-        _logger.LogInformation("Transitioned {From} -> {To} for {Id}", from, to, applicationId);
+        _logger.LogInformation("Transitioned {FromApplicationStatus} -> {ToApplicationStatus} for {ApplicationId}", from, to, applicationId);
 
         return to;
     }
